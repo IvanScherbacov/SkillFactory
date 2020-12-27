@@ -1,0 +1,64 @@
+@@ -0,0 +1,63 @@
+// Error Handling
+// Handling HTTP status code
+var statusCode = "404 Not Found"
+
+enum StatusCode : String, Error {
+    case Error400 = "400 Bad Request"
+    case Error404 = "404 Not Found"
+    case Error500 = "500 Internal Server Error"
+}
+
+func checkHttpStatusCode(status : String?) throws {
+    if status == StatusCode.Error400.rawValue { throw StatusCode.Error400 }
+    if status == StatusCode.Error404.rawValue { throw StatusCode.Error404 }
+    if status == StatusCode.Error500.rawValue { throw StatusCode.Error500 }
+}
+
+do {
+    try checkHttpStatusCode(status: statusCode)
+} catch StatusCode.Error400 {
+    print(StatusCode.Error400.rawValue)
+} catch StatusCode.Error404 {
+    print(StatusCode.Error404.rawValue)
+} catch StatusCode.Error500 {
+    print(StatusCode.Error500.rawValue)
+}
+
+//--------Generic---------
+
+enum CheckType : String, Error {
+    case Yes, No
+}
+
+func checkType<T,E>(firstType: T, secondType: E) -> String {
+    if firstType is E { return CheckType.Yes.rawValue }
+    return CheckType.No.rawValue
+}
+
+print(checkType(firstType: 5, secondType: 7))
+print(checkType(firstType: "a", secondType: 5.55))
+
+func checkTypeErrorHandling<T,E>(_ : (_ : T, _ : E) -> String, a: T, b: E)  throws {
+    if checkType(firstType: a, secondType: b) == CheckType.Yes.rawValue { throw CheckType.Yes }
+    if checkType(firstType: a, secondType: b) == CheckType.No.rawValue { throw CheckType.No }
+}
+
+do {
+    try checkTypeErrorHandling(checkType, a: 6, b: 7)
+} catch CheckType.Yes {
+    print (CheckType.Yes.rawValue + " Error Handling")
+} catch CheckType.No {
+    print (CheckType.No.rawValue + "  Error Handling")
+}
+
+//-------Generic : Equatable---------
+
+
+func isEqual<T : Equatable>(a: T, b: T) -> Bool {
+    if a == b { return true }
+    return false
+}
+
+isEqual(a: 4, b: 4)
+isEqual(a: "abc", b: "ABC")
